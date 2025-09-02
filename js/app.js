@@ -11,6 +11,7 @@ class CalorieTracker {
     this._displayCaloriesConsumed();
     this._displayCaloriesBurned();
     this._displayCaloriesRemaining();
+    this._displayCaloriesProgress();
   }
 
   addMeal(meal) {
@@ -61,10 +62,36 @@ class CalorieTracker {
 
   _displayCaloriesRemaining() {
     const caloriesRemainigEl = document.querySelector("#calories-remaining");
+    const progressEl = document.querySelector("#calorie-progress");
 
     const remaining = this._calorieLimit - this._totalCalories;
 
     caloriesRemainigEl.innerHTML = remaining;
+
+    if (remaining <= 0) {
+      caloriesRemainigEl.parentElement.parentElement.classList.remove(
+        "bg-light"
+      );
+      caloriesRemainigEl.parentElement.parentElement.classList.add("bg-danger");
+
+      progressEl.classList.remove("bg-success");
+      progressEl.classList.add("bg-danger");
+    } else {
+      caloriesRemainigEl.parentElement.parentElement.classList.remove(
+        "bg-danger"
+      );
+      caloriesRemainigEl.parentElement.parentElement.classList.add("bg-light");
+
+      progressEl.classList.remove("bg-danger");
+      progressEl.classList.add("bg-success");
+    }
+  }
+
+  _displayCaloriesProgress() {
+    const progressEl = document.querySelector("#calorie-progress");
+    const percentage = (this._totalCalories / this._calorieLimit) * 100;
+    const width = Math.min(percentage, 100);
+    progressEl.style.width = `${width}%`;
   }
 
   _render() {
@@ -72,6 +99,7 @@ class CalorieTracker {
     this._displayCaloriesConsumed();
     this._displayCaloriesBurned();
     this._displayCaloriesRemaining();
+    this._displayCaloriesProgress();
   }
 }
 
@@ -91,11 +119,11 @@ class Workout {
   }
 }
 
-// const tracker = new CalorieTracker();
-// const breakfast = new Meal("big breakfast", 300);
-// const lunch = new Meal("big lunch", 300);
-// const run = new Workout("morning run", 100);
+const tracker = new CalorieTracker();
+const breakfast = new Meal("big breakfast", 100);
+const lunch = new Meal("big lunch", 1000);
+const run = new Workout("morning run", 100);
 
-// tracker.addMeal(breakfast);
-// tracker.addMeal(lunch);
-// tracker.addWorkout(run);
+tracker.addMeal(breakfast);
+tracker.addMeal(lunch);
+tracker.addWorkout(run);
