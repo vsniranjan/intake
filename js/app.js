@@ -124,17 +124,17 @@ class App {
     this._tracker = new CalorieTracker();
     document
       .querySelector("#meal-form")
-      .addEventListener("submit", this._newMeal.bind(this));
+      .addEventListener("submit", this._newItem.bind(this, "meal"));
     document
       .querySelector("#workout-form")
-      .addEventListener("submit", this._newWorkout.bind(this));
+      .addEventListener("submit", this._newItem.bind(this, "workout"));
   }
 
-  _newMeal(event) {
+  _newItem(type, event) {
     event.preventDefault();
 
-    const name = document.querySelector("#meal-name");
-    const calories = document.querySelector("#meal-calories");
+    const name = document.querySelector(`#${type}-name`);
+    const calories = document.querySelector(`#${type}-calories`);
 
     // Basic Validation
     if (name.value === "" || calories.value === "") {
@@ -142,57 +142,20 @@ class App {
       return;
     }
 
-    const meal = new Meal(name.value, +calories.value);
-
-    this._tracker.addMeal(meal);
-    name.value = "";
-    calories.value = "";
-  }
-
-  _newMeal(event) {
-    event.preventDefault();
-
-    const name = document.querySelector("#meal-name");
-    const calories = document.querySelector("#meal-calories");
-
-    // Basic Validation
-    if (name.value === "" || calories.value === "") {
-      alert("Please fill in all fields!");
-      return;
+    if (type === "meal") {
+      const meal = new Meal(name.value, +calories.value);
+      this._tracker.addMeal(meal);
+    } else {
+      const workout = new Workout(name.value, +calories.value);
+      this._tracker.addWorkout(workout);
     }
 
-    const meal = new Meal(name.value, +calories.value);
-
-    this._tracker.addMeal(meal);
     name.value = "";
     calories.value = "";
 
-    const collapseMeal = document.querySelector("#collapse-meal");
-    const bsCollapse = new bootstrap.Collapse(collapseMeal, {
-      toggle: true,
-    });
-  }
-
-  _newWorkout(event) {
-    event.preventDefault();
-
-    const name = document.querySelector("#workout-name");
-    const calories = document.querySelector("#workout-calories");
-
-    // Basic Validation
-    if (name.value === "" || calories.value === "") {
-      alert("Please fill in all fields!");
-      return;
-    }
-
-    const workout = new Workout(name.value, +calories.value);
-
-    this._tracker.addWorkout(workout);
-    name.value = "";
-    calories.value = "";
-
-    const collapseWorkout = document.querySelector("#collapse-workout");
-    const bsCollapse = new bootstrap.Collapse(collapseWorkout, {
+    // Collapsing the add item drop down
+    const collapseItem = document.querySelector(`#collapse-${type}`);
+    const bsCollapse = new bootstrap.Collapse(collapseItem, {
       toggle: true,
     });
   }
