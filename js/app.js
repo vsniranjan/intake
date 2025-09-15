@@ -57,6 +57,12 @@ class CalorieTracker {
     this._render();
   }
 
+  setLimit(calorieLimit) {
+    this._calorieLimit = calorieLimit;
+    this._displayCaloriesLimit();
+    this._render();
+  }
+
   // Private Methods
 
   _displayCaloriesTotal() {
@@ -221,6 +227,10 @@ class App {
     document
       .querySelector("#reset")
       .addEventListener("click", this._reset.bind(this));
+
+    document
+      .querySelector("#limit-form")
+      .addEventListener("submit", this._setLimit.bind(this));
   }
 
   _newItem(type, event) {
@@ -288,6 +298,23 @@ class App {
     document.querySelector("#workout-items").innerHTML = "";
     document.querySelector("#filter-meals").innerHTML = "";
     document.querySelector("#filter-workouts").innerHTML = "";
+  }
+
+  _setLimit(event) {
+    event.preventDefault();
+    const limit = document.querySelector("#limit");
+
+    if (limit.value === "") {
+      alert("Please add a limit");
+      return;
+    }
+
+    this._tracker.setLimit(+limit.value);
+    limit.value = "";
+
+    const modalEl = document.querySelector("#limit-modal");
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    modal.hide();
   }
 }
 
